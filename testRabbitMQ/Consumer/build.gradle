@@ -2,10 +2,9 @@ version '1.0-SNAPSHOT'
 
 apply plugin: 'application'
 
-mainClassName = 'Consume.mainKt'
+mainClassName = 'dk.jacobpedersen.testRabbitMQ.Consumer.MainKt'
 
 sourceSets {
     main.kotlin.srcDirs += 'src/main/kotlin'
     main.java.srcDirs += 'src/main/java'
-    main.resources += 'src/main/resources'
 }

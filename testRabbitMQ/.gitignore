@@ -101,4 +101,6 @@ gradle-app.setting
 # End of https://www.gitignore.io/api/java,gradle,intellij+all
 
 #custom
+*/out
+*/build
 .directory

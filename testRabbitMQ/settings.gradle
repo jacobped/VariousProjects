@@ -1,4 +1,4 @@
 rootProject.name = 'testRabbitMQ'
-include 'Send'
-include 'Consume'
+include 'Consumer'
+include 'Producer'
 
