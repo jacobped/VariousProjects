@@ -34,6 +34,9 @@ subprojects {
         compile "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
         compile "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutines_version"
         compile "com.rabbitmq:amqp-client:$rabbitmq_version"
+        compile 'log4j:log4j:1.2.17'
+        compile 'org.slf4j:slf4j-api:1.7.5'
+        compile 'org.slf4j:slf4j-log4j12:1.7.5'
     }
 
     compileKotlin {
