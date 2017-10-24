@@ -13,7 +13,7 @@ fun main(args : Array<String>) {
     println("Hello, world!")
     println("Start")
     val factory = ConnectionFactory()
-    factory.host = "172.17.0.2"
+    factory.host = "localhost"
     factory.port= 5672
     factory.username = "guest"
     factory.password = "guest"
