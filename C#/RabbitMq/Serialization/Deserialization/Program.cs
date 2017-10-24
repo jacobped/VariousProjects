@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Serialization;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
+using Utilities;
 
 namespace Deserialization
 {
@@ -23,20 +25,22 @@ namespace Deserialization
                     consumer.Received += (model, ea) =>
                     {
                         var body = ea.Body;
-                        var message = Encoding.UTF8.GetString(body);
-                        Console.WriteLine("Received: {0}", message);
+                        var messageString = Encoding.UTF8.GetString(body);
+                        MMMessage message = messageString.XmlDeserializeFromString<MMMessage>();
+
+                        Console.WriteLine("Received: {0}", message.Test);
                     };
                     channel.BasicConsume(queue: "serial", autoAck: true, consumer: consumer);
                     Console.WriteLine("Done processing.");
                     Console.ReadLine();
                 }
             }
-            var s = hej(juelmand: "Santa", nej: true);
         }
+    }
 
-        private static bool hej(string juelmand, bool nej)
-        {
-            return false;
-        }
+    [XmlType(TypeName = "MQMessage")]
+    public class MMMessage : Message
+    {
+        public new string Test { get; set; }
     }
 }
