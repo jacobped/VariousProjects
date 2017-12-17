@@ -11,7 +11,7 @@ namespace JokeProducer
 {
     class Producer
     {
-        private static readonly int amountToSpam = 1000000000;
+        private static readonly int amountToSpam = 10;
 
         static void Main(string[] args)
         {
@@ -19,13 +19,13 @@ namespace JokeProducer
             using (var connection = factory.CreateConnection())
             using (var channel = connection.CreateModel())
             {
-                channel.ExchangeDeclare( exchange: "jokesExhange", type: "fanout", durable: false, autoDelete: false, arguments: null);
+                channel.ExchangeDeclare(exchange: "jokesExhange", type: "fanout", durable: false, autoDelete: false, arguments: null);
                 //channel.QueueDeclare(queue: "jokes", durable: false, exclusive: false, autoDelete: false, arguments: null);
                 for (int i = 0; i < amountToSpam; i++)
                 {
                     //string message = "hello world";
                     Tuple<int, string> joke =GetJoke();
-                    Message message = new Message { JokeId = joke.Item1, Joke = joke.Item2 };
+                    MessageJoke message = new MessageJoke { JokeId = joke.Item1, Joke = joke.Item2 };
                     //var body = Encoding.UTF8.GetBytes(message);
                     var body = Encoding.UTF8.GetBytes(message.XmlSerializeToString());
 

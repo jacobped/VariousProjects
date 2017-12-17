@@ -31,7 +31,7 @@ namespace StatisticsConsumer
                     {
                         var body = ea.Body;
                         var messageString = Encoding.UTF8.GetString(body);
-                        Message message = messageString.XmlDeserializeFromString<Message>();
+                        MessageJoke message = messageString.XmlDeserializeFromString<MessageJoke>();
 
                         amount++;
                         //Console.Write("\r{0]  ", amount);
