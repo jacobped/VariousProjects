@@ -1,5 +1,3 @@
-package com.company;
-
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -11,8 +9,8 @@ public class Main {
 
     public static void main(String[] args) throws IOException {
 	// write your code here
-        File inputFile = new File("/home/jacob/VmShare/dhcp.xml");
-        File outputFile = new File("/home/jacob/VmShare/dhcpProcessed.xml");
+        File inputFile = new File("/home/jacob/Andet/Temp/testxml/old.xml");
+        File outputFile = new File("/home/jacob/Andet/Temp/testxml/newRules.xml");
 
         replaceStringInFile(inputFile, outputFile);
     }
@@ -38,18 +36,23 @@ public class Main {
             boolean replace = false;
             int currentValue = 0;
 
-            if(lineTrimmed.contains("<opt")) {
-                String optValueString = lineTrimmed.substring(4, lineTrimmed.length() - 1);
+            if(lineTrimmed.contains("<interface>opt")) {
+                String optValueString = lineTrimmed.substring(14, lineTrimmed.length() - 12);
+                currentValue = Integer.parseInt(optValueString);
+
+                replace = true;
+            } else if(lineTrimmed.contains("<network>opt")) {
+                String optValueString = lineTrimmed.substring(12, lineTrimmed.length() - 10);
                 currentValue = Integer.parseInt(optValueString);
 
                 replace = true;
             }
-            else if(lineTrimmed.contains("</opt")) {
-                String optValueString = lineTrimmed.substring(5, lineTrimmed.length() - 1);
-                currentValue = Integer.parseInt(optValueString);
-
-                replace = true;
-            }
+//            else if(lineTrimmed.contains("</opt")) {
+//                String optValueString = lineTrimmed.substring(5, lineTrimmed.length() - 1);
+//                currentValue = Integer.parseInt(optValueString);
+//
+//                replace = true;
+//            }
 
             if(replace) {
                 // This way it keeps the line indentation.
