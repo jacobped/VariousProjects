@@ -30,7 +30,7 @@ public class GenerateVlans {
         result.add("</vlans>");
 
 
-        File file = new File("/home/jacob/Andet/Temp/testxml/backup/FraNyServerSetup/generated/vlan.xml");
+        File file = new File("/home/jacob/Andet/Temp/obelnet/new-vlan.xml");
         FileUtils.writeLines(file, result);
     }
 
@@ -41,11 +41,11 @@ public class GenerateVlans {
 
         result.add("\t<vlan>");
 
-        result.add("\t\t<if>igb2</if>");
+        result.add("\t\t<if>vmx1</if>");
         result.add("\t\t<tag>1" + value + "</tag>");
         result.add("\t\t<pcp></pcp>");
         result.add("\t\t<descr><![CDATA[APT" + value + "]]></descr>");
-        result.add("\t\t<vlanif>igb2_vlan1" + value + "</vlanif>");
+        result.add("\t\t<vlanif>vmx1.vlan1" + value + "</vlanif>");
 
         result.add("\t</vlan>");
 

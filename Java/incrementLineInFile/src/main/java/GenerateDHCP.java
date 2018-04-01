@@ -12,38 +12,31 @@ public class GenerateDHCP {
 
     public static void main(String[] args) throws IOException {
 
-        generateDHCPFile();
+        generateDHCPFile(203, 3);
     }
 
-    private static void generateDHCPFile() throws IOException {
+    private static void generateDHCPFile(int amount, int startinterfaceNumber) throws IOException {
         List<String> result = new ArrayList<>();
 
-        result.add("<dhcpd>");
-
-        int total = 203;
-        for (int i = 1; i < (total + 1); i++) {
-            List<String> vlan = generateDHCP(i);
+        for (int i = 1; i < (amount + 1); i++) {
+            List<String> vlan = generateDHCP(i, startinterfaceNumber);
             result.addAll(vlan);
+            startinterfaceNumber++;
         }
 
-        result.add("</dhcpd>");
-
-
-        File file = new File("/home/jacob/Andet/Temp/testxml/backup/FraNyServerSetup/generated/dhcp.xml");
+        File file = new File("/home/jacob/Andet/Temp/obelnet/new-DHCPDSubList.xml");
         FileUtils.writeLines(file, result);
     }
 
-    private static List<String> generateDHCP(int i) {
+    private static List<String> generateDHCP(int value, int interfaceNumber) {
         List<String> result = new ArrayList<>();
-        String value = String.format("%03d", i);
 
-        result.add("\t<opt" + (i + 1) + "> ");
+        result.add("\t<opt" + interfaceNumber + ">");
         result.add("\t\t<range>");
-        result.add("\t\t\t<from>10.10." + i + ".2</from>");
-        result.add("\t\t\t<to>10.10." + i + ".254</to>");
+        result.add("\t\t\t<from>10.10." + value + ".1</from>");
+        result.add("\t\t\t<to>10.10." + value + ".254</to>");
         result.add("\t\t</range>");
-        result.add(
-                "\t\t<enable></enable>\n" +
+        result.add("\t\t<enable></enable>\n" +
                 "\t\t<failover_peerip></failover_peerip>\n" +
                 "\t\t<defaultleasetime></defaultleasetime>\n" +
                 "\t\t<maxleasetime></maxleasetime>\n" +
@@ -54,9 +47,11 @@ public class GenerateDHCP {
                 "\t\t<ddnsdomain></ddnsdomain>\n" +
                 "\t\t<ddnsdomainprimary></ddnsdomainprimary>\n" +
                 "\t\t<ddnsdomainkeyname></ddnsdomainkeyname>\n" +
+                "\t\t<ddnsdomainkeyalgorithm>hmac-md5</ddnsdomainkeyalgorithm>\n" +
                 "\t\t<ddnsdomainkey></ddnsdomainkey>\n" +
                 "\t\t<mac_allow></mac_allow>\n" +
                 "\t\t<mac_deny></mac_deny>\n" +
+                "\t\t<ddnsclientupdates>allow</ddnsclientupdates>\n" +
                 "\t\t<tftp></tftp>\n" +
                 "\t\t<ldap></ldap>\n" +
                 "\t\t<nextserver></nextserver>\n" +
@@ -66,9 +61,8 @@ public class GenerateDHCP {
                 "\t\t<rootpath></rootpath>\n" +
                 "\t\t<numberoptions></numberoptions>\n" +
                 "\t\t<dhcpleaseinlocaltime>yes</dhcpleaseinlocaltime>");
-        result.add("\t</opt" + (i + 1) + "> ");
+        result.add("\t</opt" + interfaceNumber + ">");
 
         return result;
     }
-
 }
