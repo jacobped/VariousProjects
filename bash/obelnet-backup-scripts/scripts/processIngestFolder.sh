@@ -102,14 +102,21 @@ notifyDiscord() {
   fi
 }
 
-# notifySlack() {
-    # Todo
-# }
+#
+# Slack Webhook notifier
+#
+notifySlack() {
+    if [ -n "${slackWebhookURL}" ]; then
+        local msg="$(echo -n "${1}" | sed 's/"/\"/g' | sed "s/'/\'/g")"
+        local json="{\"text\":\"${msg}\"}"
+        curl -s -X POST -H "Content-Type: application/json" --data "${json}" "$slackWebhookURL" >/dev/null
+    fi
+}
 
 notify() {
     echo "${1}"
     notifyDiscord "${1}"
-    # notifySlack "${1}"
+    notifySlack "${1}"
 }
 
 onError() {
