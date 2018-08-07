@@ -29,17 +29,19 @@ movefile() {
     local moveSubDir=${2}
 
     local filename=$(basename -- "$file")
-    # echo "Moving: ${filename}"
-
     local resultFile="${backupsDir}/${moveSubDir}/${filename}"
+
+    mkdir -P "${backupsDir}/${moveSubDir}"
+
+    # TODO: perhaps move into folder based on current year or year from backed up file.
 
     # Check if file already exists. We don't want to overwrite anything.
     if ! [[ -f "${resultFile}" ]]; then
         # Move file to backup dir inside given subfolder.
         mv "${file}" "${resultFile}" || onError "unexpected faillure moving file: ${file}"
-        echo "Moved file: ${filename}"
+        notify "Moved file: ${filename}"
     else
-        onError "This is dangerous. Can't move file to backup sub dir. File already exists: ${resultFile}"
+        onError "Can't move file to backup sub dir. File already exists: ${resultFile}"
     fi
 }
 
@@ -50,7 +52,7 @@ processIngestDir() {
             processFile "${file}"
         done
     else
-        notify "Ingest dir is empty. Nothing to do."
+        log "Ingest dir is empty. Nothing to do."
     fi
 }
 
@@ -80,7 +82,7 @@ validateFolders() {
 }
 
 doChangePathToScriptDir() {
-    # location of this script.
+    # directory location where this script resides.
     local scriptDir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
 
     cd "${scriptDir}"
@@ -95,11 +97,11 @@ doLoadConfig() {
 # Discord Webhook notifier
 #
 notifyDiscord() {
-  if [ -n "$discordWebhookURL" ]; then
-    local msg="$(echo -n "${1}" | tr '\n' '\001' | sed 's/\001/\\n/g;s/["\\]/\\\0/g')"
-    local json="{\"content\":\"${msg}\"}"
-    curl -s -H "Content-Type: application/json" -d "${json}" "$discordWebhookURL" >/dev/null
-  fi
+    if [ -n "${discordWebhookURL}" ]; then
+        local msg="$(echo -n "${1}" | tr '\n' '\001' | sed 's/\001/\\n/g;s/["\\]/\\\0/g')"
+        local json="{\"content\":\"${msg}\"}"
+        curl -s -H "Content-Type: application/json" --data "${json}" "$discordWebhookURL" >/dev/null
+    fi
 }
 
 #
@@ -113,17 +115,23 @@ notifySlack() {
     fi
 }
 
-notify() {
+log() {
     echo "${1}"
-    notifyDiscord "${1}"
-    notifySlack "${1}"
+}
+
+notify() {
+    log "${1}"
+    local msg="*Backup ingest script:* ${1}"
+    notifyDiscord "${msg}"
+    notifySlack "${msg}"
 }
 
 onError() {
-    notify "ERROR: ${1}"
+    notify "\`ERROR:\` ${1}"
 }
 
 main() {
+    log "Running backup sript on ingest folder"
     doChangePathToScriptDir
     doLoadConfig
     validateFolders
