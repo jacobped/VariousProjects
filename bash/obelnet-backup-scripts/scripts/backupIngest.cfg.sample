@@ -1,0 +1,10 @@
+
+# Configuration for backup ingest processor.
+ingestDir="$BACKUPDIR/ingest"
+backupsDir="$BACKUPDIR/backups"
+gatewayDirName="gateway"
+webserverDirName="webserver"
+
+# Notifications: if value is "" that service will be disabled in script.
+discordWebhookURL=""
+slackWebhookURL=""

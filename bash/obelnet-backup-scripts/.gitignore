@@ -1,0 +1,8 @@
+
+scripts/backupIngest.cfg
+ingest/*
+backups/*
+
+#system stuff
+.directory
+*.kate-swp
