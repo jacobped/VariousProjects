@@ -2,28 +2,39 @@
 
 configFile="backupIngest.cfg"
 
+#
+# Defines how each file in ingest folder should be processed.
+# Edit this function to suit your needs!
+#
 processFile() {
     local file=${1}
 
-    # Checks file matches pattern: /some/file/path/file-name-2018-12-31-23-59-59.type
+    # Files must match the file pattern: /some/file/path/file-name-2018-12-31-23-59-59.type
+    # The date format is: year-month-date-hour-minute-second
     local baseFileNameFormat="^[a-zA-Z0-9\/\-]*[a-zA-Z0-9-]*-[0-9]{4}-[0-9]{2}-[0-9]{2}-[0-9]{2}-[0-9]{2}-[0-9]{2}.[.a-zA-Z0-9\/]*$"
 
-    # Gateway
-    if [[ $file =~ ^[a-zA-Z0-9\/\-]*gateway-config-[0-9]{4}-[0-9]{2}-[0-9]{2}-[0-9]{2}-[0-9]{2}-[0-9]{2}.xml$ ]]; then
-        movefile "${file}" "${gatewayDirName}"
+    if [[ $file =~ $baseFileNameFormat ]]; then
+        # This is where you add support for the different backup types, and defines which sub-folder you want them moved to.
 
-    # Webserver
-    elif [[ $file =~ ^[a-zA-Z0-9\/\-]*webserver-[0-9]{4}-[0-9]{2}-[0-9]{2}-[0-9]{2}-[0-9]{2}-[0-9]{2}.tar.gz$ ]]; then
-        movefile "${file}" "${webserverDirName}"
+        # Gateway
+        if [[ $file =~ ^[a-zA-Z0-9\/\-]*gateway-config-[0-9]{4}-[0-9]{2}-[0-9]{2}-[0-9]{2}-[0-9]{2}-[0-9]{2}.xml$ ]]; then
+            movefile "${file}" "${gatewayDirName}"
 
-    elif ! [[ $file =~ $baseFileNameFormat ]]; then
-        notify "Skipping unsupported filename pattern: ${file}"
+        # Webserver
+        elif [[ $file =~ ^[a-zA-Z0-9\/\-]*webserver-[0-9]{4}-[0-9]{2}-[0-9]{2}-[0-9]{2}-[0-9]{2}-[0-9]{2}.tar.gz$ ]]; then
+            movefile "${file}" "${webserverDirName}"
 
+        else
+            notify "Skipping filename with no defined move rule: ${file}"
+        fi
     else
-        notify "Skipping filename with no defined move rule: ${file}"
+        notify "Skipping unsupported filename pattern: ${file}"
     fi
 }
 
+#
+# Handles the moving of the file.
+#
 movefile() {
     local file=${1}
     local moveSubDir=${2}
@@ -44,7 +55,7 @@ movefile() {
     if ! [[ -f "${resultFile}" ]]; then
         # Move file to backup dir inside given subfolder.
         mv "${file}" "${resultFile}" || onError "unexpected faillure moving file: ${file}"
-        notify "Moved file: ${filename}"
+        notify "Processed file: ${filename}"
     else
         onError "Can't move file to backup sub dir. File already exists: ${resultFile}"
     fi
