@@ -28,12 +28,17 @@ movefile() {
     local file=${1}
     local moveSubDir=${2}
 
+    # Filename, including its extension.
     local filename=$(basename -- "$file")
-    local resultFile="${backupsDir}/${moveSubDir}/${filename}"
 
-    mkdir -P "${backupsDir}/${moveSubDir}"
+    # Based on the baseFileNameFormat but adapted for the "sed" tool, and extraction of the year.
+    local getYearSedRegex="s/^[a-zA-Z0-9\/\-]*[a-zA-Z0-9-]*-\([0-9]\{4\}\)-[0-9]\{2\}-[0-9]\{2\}-[0-9]\{2\}-[0-9]\{2\}-[0-9]\{2\}.[.a-zA-Z0-9\/]*$/\1/"
+    local year="$(echo "${filename}" | sed "${getYearSedRegex}")"
 
-    # TODO: perhaps move into folder based on current year or year from backed up file.
+    local resultDir="${backupsDir}/${moveSubDir}/${year}"
+    local resultFile="${resultDir}/${filename}"
+
+    mkdir -p "${resultDir}"
 
     # Check if file already exists. We don't want to overwrite anything.
     if ! [[ -f "${resultFile}" ]]; then
